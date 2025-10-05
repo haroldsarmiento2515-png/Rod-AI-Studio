@@ -1,22 +1,73 @@
-# Getting Started with Create React App
+# ROD AI Studio
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Version 0.1.0**
 
-## Available Scripts
+ROD AI Studio is an intelligent AI-powered application that combines image generation, conversational AI, and image analysis capabilities. Built with React and powered by OpenAI's GPT-4 and DALL-E 3, it provides a personalized creative workspace for content creators, marketers, and businesses.
+
+## ✨ Features
+
+- **AI Image Generation**: Create stunning, professional-quality images using DALL-E 3 by simply describing what you want
+- **Intelligent Conversations**: Chat with Rod, your AI assistant powered by GPT-4 for brainstorming, answering questions, and creative guidance
+- **Image Analysis**: Upload images and get detailed analysis using GPT-4 Vision, including composition feedback and editing suggestions
+- **Personalized Experience**: Customize the app to your industry, niche, and preferred image style for tailored results
+- **Dark/Light Theme**: Switch between themes for comfortable viewing
+- **Responsive Design**: Works seamlessly across desktop and mobile devices
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- OpenAI API key (get one from [OpenAI Platform](https://platform.openai.com/api-keys))
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd rod-ai-tool
+   ```2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file in the root directory and add your OpenAI API key:
+   ```
+   REACT_APP_OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+4. Start the development server:
+   ```bash
+   npm start
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📖 Usage
+
+1. **First Time Setup**: Complete the onboarding process to personalize your experience with your name, industry, niche, and preferred image style.
+
+2. **Image Generation**: Type a description of the image you want to create, and Rod will generate it using DALL-E 3.
+
+3. **Conversations**: Ask questions, get creative suggestions, or brainstorm ideas with the AI assistant.
+
+4. **Image Analysis**: Upload an image and ask questions about it, or request analysis and editing suggestions.
+
+5. **Theme Toggle**: Click the sun/moon icon to switch between light and dark themes.
+
+## 🛠️ Available Scripts
 
 In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
+Launches the test runner in interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
@@ -24,47 +75,33 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
 If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🏗️ Technologies Used
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Frontend**: React 19.2.0
+- **Icons**: Lucide React
+- **AI Services**: OpenAI GPT-4, DALL-E 3, GPT-4 Vision
+- **Build Tool**: Create React App
+- **Styling**: Custom CSS with theme support
+- **Testing**: Jest, React Testing Library
 
-## Learn More
+## 🤝 Contributing
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📄 License
 
-### Code Splitting
+This project is private and proprietary.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📞 Support
 
-### Analyzing the Bundle Size
+If you encounter any issues or have questions, please create an issue in the repository.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Built with ❤️ using React and OpenAI's powerful AI models.
