@@ -90,6 +90,12 @@ If you aren't satisfied with the build tool and configuration choices, you can `
 - **Styling**: Custom CSS with theme support
 - **Testing**: Jest, React Testing Library
 
+## Languages and Frameworks Used
+
+- **JavaScript (React)**: Primary language for React components and application logic (~70% of codebase)
+- **CSS**: For styling the user interface (~20% of codebase)
+- **HTML**: For the base structure in index.html (~10% of codebase)
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
