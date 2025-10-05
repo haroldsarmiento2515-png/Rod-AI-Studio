@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Sparkles, Download, Loader2, ArrowRight, ArrowLeft, Send, Menu, X, Search, Library, FolderPlus, MessageSquarePlus, Copy, ThumbsUp, ThumbsDown, RefreshCw, ChevronDown } from 'lucide-react';
+import { Sparkles, Download, Loader2, ArrowRight, ArrowLeft, Send, Menu, X, Search, Library, FolderPlus, MessageSquarePlus, Copy, ThumbsUp, ThumbsDown, RefreshCw, ChevronDown, Sun, Moon } from 'lucide-react';
 import './App.css';
 
 const INDUSTRIES = [
@@ -41,8 +41,20 @@ function App() {
   const [chatHistory, setChatHistory] = useState([]);
   const [showUserMenu, setShowUserMenu] = useState(false);
   
+  // Theme state
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('rod-ai-theme');
+    return saved || 'dark';
+  });
+  
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+
+  // Apply theme changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('rod-ai-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,6 +81,10 @@ function App() {
   };
 
   const nowTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   const handleNext = () => {
     if (onboardingStep < 4) {
@@ -106,7 +122,7 @@ function App() {
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
+        model: 'dall-e-3',
         prompt: enhancedPrompt,
         n: 1,
         size: '1024x1024'
@@ -135,7 +151,7 @@ function App() {
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4.1',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
@@ -328,279 +344,180 @@ function App() {
 
   if (showOnboarding) {
     return (
-      <div className="onboarding-screen">
-        <div className="onboarding-container">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${(onboardingStep / 4) * 100}%` }} />
-          </div>
-          <p className="progress-text">Step {onboardingStep} of 4</p>
-          
-          {renderOnboardingStep()}
+      <>
+        {/* Global Theme Toggle - Fixed Position */}
+        <button 
+          className="theme-toggle-floating" 
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
 
-          <div className="onboarding-actions">
-            {onboardingStep > 1 && (
-              <button onClick={handleBack} className="btn btn-secondary">
-                <ArrowLeft size={20} />
-                Back
+        <div className="onboarding-screen">
+          <div className="onboarding-container">
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${(onboardingStep / 4) * 100}%` }} />
+            </div>
+            <p className="progress-text">Step {onboardingStep} of 4</p>
+            
+            {renderOnboardingStep()}
+
+            <div className="onboarding-actions">
+              {onboardingStep > 1 && (
+                <button onClick={handleBack} className="btn btn-secondary">
+                  <ArrowLeft size={20} />
+                  Back
+                </button>
+              )}
+              <button onClick={handleNext} className="btn btn-primary" disabled={!canProceed()}>
+                {onboardingStep === 4 ? 'Start Creating' : 'Next'}
+                <ArrowRight size={20} />
               </button>
-            )}
-            <button onClick={handleNext} className="btn btn-primary" disabled={!canProceed()}>
-              {onboardingStep === 4 ? 'Start Creating' : 'Next'}
-              <ArrowRight size={20} />
+            </div>
+
+            <button onClick={() => setShowOnboarding(false)} className="skip-button">
+              Skip for now
             </button>
           </div>
-
-          <button onClick={() => setShowOnboarding(false)} className="skip-button">
-            Skip for now
-          </button>
         </div>
-      </div>
+      </>
     );
   }
 
   const hasConversation = chatHistory.length > 0 || loading;
 
   return (
-    <div className="claude-layout">
-      <aside className={`claude-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-        <button
-          className="collapse-btn"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {sidebarCollapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
+    <>
+      {/* Global Theme Toggle - Fixed Position */}
+      <button 
+        className="theme-toggle-floating" 
+        onClick={toggleTheme}
+        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      >
+        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
 
-        {!sidebarCollapsed ? (
-          <>
-            <div className="sidebar-top">
-              <div className="sidebar-logo-section">
-                <div className="logo-small">
-                  <div className="logo-overlay" />
-                  <div className="logo-ring-small" />
-                  <div className="logo-dot-small" />
+      <div className="claude-layout">
+        <aside className={`claude-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+          <button
+            className="collapse-btn"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {sidebarCollapsed ? <Menu size={20} /> : <X size={20} />}
+          </button>
+
+          {!sidebarCollapsed ? (
+            <>
+              <div className="sidebar-top">
+                <div className="sidebar-logo-section">
+                  <div className="logo-small">
+                    <div className="logo-overlay" />
+                    <div className="logo-ring-small" />
+                    <div className="logo-dot-small" />
+                  </div>
+                  <h1 className="sidebar-title-main">ROD AI Studio</h1>
                 </div>
-                <h1 className="sidebar-title-main">ROD AI Studio</h1>
-              </div>
 
-              <div className="sidebar-nav">
-                <button className="nav-item active">
-                  <MessageSquarePlus size={18} />
-                  <span>New chat</span>
-                </button>
-                <button className="nav-item">
-                  <Search size={18} />
-                  <span>Search chats</span>
-                </button>
-                <button className="nav-item">
-                  <Library size={18} />
-                  <span>Library</span>
-                </button>
-              </div>
-
-              <div className="sidebar-section">
-                <div className="section-header">
-                  <span className="section-title">Projects</span>
-                  <button className="section-action">
-                    <FolderPlus size={16} />
+                <div className="sidebar-nav">
+                  <button className="nav-item active">
+                    <MessageSquarePlus size={18} />
+                    <span>New chat</span>
+                  </button>
+                  <button className="nav-item">
+                    <Search size={18} />
+                    <span>Search chats</span>
+                  </button>
+                  <button className="nav-item">
+                    <Library size={18} />
+                    <span>Library</span>
                   </button>
                 </div>
-                <button className="project-item" onClick={() => setChatHistory([])}>
-                  <Sparkles size={16} />
-                  <span>New Conversation</span>
-                </button>
-              </div>
-            </div>
 
-            <div className="sidebar-bottom">
-              <div className="user-menu-trigger" onClick={() => setShowUserMenu(!showUserMenu)}>
-                <div className="user-avatar-badge">
-                  {userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
-                </div>
-                <div className="user-info-bottom">
-                  <p className="user-name">{userData.name || 'User'}</p>
-                  <p className="user-workspace">{userData.industry || 'ROD AI Workspace'}</p>
-                </div>
-                <ChevronDown size={16} className="chevron-icon" />
-              </div>
-              
-              {showUserMenu && (
-                <div className="user-dropdown">
-                  <div className="dropdown-item">
-                    <span className="dropdown-label">Industry:</span>
-                    <span className="dropdown-value">{userData.industry || 'Not set'}</span>
+                <div className="sidebar-section">
+                  <div className="section-header">
+                    <span className="section-title">Projects</span>
+                    <button className="section-action">
+                      <FolderPlus size={16} />
+                    </button>
                   </div>
-                  <div className="dropdown-item">
-                    <span className="dropdown-label">Niche:</span>
-                    <span className="dropdown-value">{userData.niche || 'Not set'}</span>
-                  </div>
-                  <div className="dropdown-item">
-                    <span className="dropdown-label">Style:</span>
-                    <span className="dropdown-value">{userData.imageStyle || 'Not set'}</span>
-                  </div>
+                  <button className="project-item" onClick={() => setChatHistory([])}>
+                    <Sparkles size={16} />
+                    <span>New Conversation</span>
+                  </button>
                 </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="sidebar-icons">
-            <button className="icon-btn" title="New Chat" onClick={() => setChatHistory([])}>
-              <MessageSquarePlus size={20} />
-            </button>
-            <button className="icon-btn" title="Search">
-              <Search size={20} />
-            </button>
-            <button className="icon-btn" title="Library">
-              <Library size={20} />
-            </button>
-          </div>
-        )}
-      </aside>
-
-      <main className="claude-main">
-        <div className="chat-container">
-          {!hasConversation ? (
-            <div className="centered-content">
-              <div className="empty-state">
-                <div className="empty-icon">
-                  <Sparkles size={48} color="#3b82f6" />
-                </div>
-                <h2 className="empty-title">Ready to create, {userData.name || 'there'}?</h2>
-                <p className="empty-subtitle">Ask me anything or generate images</p>
               </div>
 
-              <div className="centered-input-wrapper">
-                <textarea
-                  ref={textareaRef}
-                  className="centered-input"
-                  placeholder="Ask a question or describe an image to create..."
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  rows="3"
-                />
-                <button
-                  className="centered-send-button"
-                  onClick={handleSendMessage}
-                  disabled={loading || !prompt.trim()}
-                  aria-label="Send message"
-                >
-                  <Send size={20} />
-                </button>
-              </div>
-
-              <div className="centered-suggestion-chips">
-                <button className="chip" onClick={() => setPrompt('Create a serene mountain landscape at golden hour')}>
-                  Mountain landscape
-                </button>
-                <button className="chip" onClick={() => setPrompt('What are the best practices for social media images?')}>
-                  Social media tips
-                </button>
-                <button className="chip" onClick={() => setPrompt('Generate a futuristic robot in a cyberpunk city')}>
-                  Sci-fi scene
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="messages">
-                {chatHistory.map((message, index) => (
-                  <div key={index} className={`message ${message.type}`}>
-                    {message.type === 'assistant' ? (
-                      <div className="message-content">
-                        <div className="message-avatar rod-avatar">
-                          <Sparkles size={16} />
-                        </div>
-                        <div className="message-wrapper">
-                          {message.contentType === 'image' ? (
-                            <>
-                              <div className="generated-result">
-                                <img src={message.content} alt="Generated" className="result-image" />
-                                <p className="result-prompt">"{message.prompt}"</p>
-                              </div>
-                              <div className="message-actions">
-                                <button className="action-btn" onClick={() => handleCopy(message.prompt)}>
-                                  <Copy size={14} />
-                                </button>
-                                <button className="action-btn">
-                                  <ThumbsUp size={14} />
-                                </button>
-                                <button className="action-btn">
-                                  <ThumbsDown size={14} />
-                                </button>
-                                <a href={message.content} download="rod-ai-image.png" className="action-btn">
-                                  <Download size={14} />
-                                </a>
-                                <button className="action-btn" onClick={() => setPrompt(message.prompt)}>
-                                  <RefreshCw size={14} />
-                                </button>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="message-text">
-                                <p>{message.content}</p>
-                              </div>
-                              <div className="message-actions">
-                                <button className="action-btn" onClick={() => handleCopy(message.content)}>
-                                  <Copy size={14} />
-                                </button>
-                                <button className="action-btn">
-                                  <ThumbsUp size={14} />
-                                </button>
-                                <button className="action-btn">
-                                  <ThumbsDown size={14} />
-                                </button>
-                                <button className="action-btn" onClick={() => setPrompt(message.content)}>
-                                  <RefreshCw size={14} />
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="message-content user-content">
-                        <div className="user-message-bubble">
-                          <p>{message.content}</p>
-                        </div>
-                      </div>
-                    )}
+              <div className="sidebar-bottom">
+                <div className="user-menu-trigger" onClick={() => setShowUserMenu(!showUserMenu)}>
+                  <div className="user-avatar-badge">
+                    {userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
                   </div>
-                ))}
-
-                {loading && (
-                  <div className="message assistant">
-                    <div className="message-content">
-                      <div className="message-avatar rod-avatar">
-                        <Loader2 size={16} className="spinner-icon" />
-                      </div>
-                      <div className="message-wrapper">
-                        <div className="message-text">
-                          <p className="loading-text">Rod is working on it...</p>
-                        </div>
-                      </div>
+                  <div className="user-info-bottom">
+                    <p className="user-name">{userData.name || 'User'}</p>
+                    <p className="user-workspace">{userData.industry || 'ROD AI Workspace'}</p>
+                  </div>
+                  <ChevronDown size={16} className="chevron-icon" />
+                </div>
+                
+                {showUserMenu && (
+                  <div className="user-dropdown">
+                    <div className="dropdown-item">
+                      <span className="dropdown-label">Industry:</span>
+                      <span className="dropdown-value">{userData.industry || 'Not set'}</span>
+                    </div>
+                    <div className="dropdown-item">
+                      <span className="dropdown-label">Niche:</span>
+                      <span className="dropdown-value">{userData.niche || 'Not set'}</span>
+                    </div>
+                    <div className="dropdown-item">
+                      <span className="dropdown-label">Style:</span>
+                      <span className="dropdown-value">{userData.imageStyle || 'Not set'}</span>
                     </div>
                   </div>
                 )}
-
-                {error && <div className="error-message">{error}</div>}
-                <div ref={messagesEndRef} />
               </div>
+            </>
+          ) : (
+            <div className="sidebar-icons">
+              <button className="icon-btn" title="New Chat" onClick={() => setChatHistory([])}>
+                <MessageSquarePlus size={20} />
+              </button>
+              <button className="icon-btn" title="Search">
+                <Search size={20} />
+              </button>
+              <button className="icon-btn" title="Library">
+                <Library size={20} />
+              </button>
+            </div>
+          )}
+        </aside>
 
-              <div className="input-container">
-                <div className="input-wrapper">
+        <main className="claude-main">
+          <div className="chat-container">
+            {!hasConversation ? (
+              <div className="centered-content">
+                <div className="empty-state">
+                  <div className="empty-icon">
+                    <Sparkles size={48} color="#3b82f6" />
+                  </div>
+                  <h2 className="empty-title">Ready to create, {userData.name || 'there'}?</h2>
+                  <p className="empty-subtitle">Ask me anything or generate images</p>
+                </div>
+
+                <div className="centered-input-wrapper">
                   <textarea
                     ref={textareaRef}
-                    className="claude-input"
-                    placeholder="Ask a question or describe an image..."
+                    className="centered-input"
+                    placeholder="Ask a question or describe an image to create..."
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    rows="1"
+                    rows="3"
                   />
                   <button
-                    className="send-button"
+                    className="centered-send-button"
                     onClick={handleSendMessage}
                     disabled={loading || !prompt.trim()}
                     aria-label="Send message"
@@ -608,12 +525,133 @@ function App() {
                     <Send size={20} />
                   </button>
                 </div>
+
+                <div className="centered-suggestion-chips">
+                  <button className="chip" onClick={() => setPrompt('Create a serene mountain landscape at golden hour')}>
+                    Mountain landscape
+                  </button>
+                  <button className="chip" onClick={() => setPrompt('What are the best practices for social media images?')}>
+                    Social media tips
+                  </button>
+                  <button className="chip" onClick={() => setPrompt('Generate a futuristic robot in a cyberpunk city')}>
+                    Sci-fi scene
+                  </button>
+                </div>
               </div>
-            </>
-          )}
-        </div>
-      </main>
-    </div>
+            ) : (
+              <>
+                <div className="messages">
+                  {chatHistory.map((message, index) => (
+                    <div key={index} className={`message ${message.type}`}>
+                      {message.type === 'assistant' ? (
+                        <div className="message-content">
+                          <div className="message-avatar rod-avatar">
+                            <Sparkles size={16} />
+                          </div>
+                          <div className="message-wrapper">
+                            {message.contentType === 'image' ? (
+                              <>
+                                <div className="generated-result">
+                                  <img src={message.content} alt="Generated" className="result-image" />
+                                  <p className="result-prompt">"{message.prompt}"</p>
+                                </div>
+                                <div className="message-actions">
+                                  <button className="action-btn" onClick={() => handleCopy(message.prompt)}>
+                                    <Copy size={14} />
+                                  </button>
+                                  <button className="action-btn">
+                                    <ThumbsUp size={14} />
+                                  </button>
+                                  <button className="action-btn">
+                                    <ThumbsDown size={14} />
+                                  </button>
+                                  <a href={message.content} download="rod-ai-image.png" className="action-btn">
+                                    <Download size={14} />
+                                  </a>
+                                  <button className="action-btn" onClick={() => setPrompt(message.prompt)}>
+                                    <RefreshCw size={14} />
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="message-text">
+                                  <p>{message.content}</p>
+                                </div>
+                                <div className="message-actions">
+                                  <button className="action-btn" onClick={() => handleCopy(message.content)}>
+                                    <Copy size={14} />
+                                  </button>
+                                  <button className="action-btn">
+                                    <ThumbsUp size={14} />
+                                  </button>
+                                  <button className="action-btn">
+                                    <ThumbsDown size={14} />
+                                  </button>
+                                  <button className="action-btn" onClick={() => setPrompt(message.content)}>
+                                    <RefreshCw size={14} />
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="message-content user-content">
+                          <div className="user-message-bubble">
+                            <p>{message.content}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {loading && (
+                    <div className="message assistant">
+                      <div className="message-content">
+                        <div className="message-avatar rod-avatar">
+                          <Loader2 size={16} className="spinner-icon" />
+                        </div>
+                        <div className="message-wrapper">
+                          <div className="message-text">
+                            <p className="loading-text">Rod is working on it...</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {error && <div className="error-message">{error}</div>}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                <div className="input-container">
+                  <div className="input-wrapper">
+                    <textarea
+                      ref={textareaRef}
+                      className="claude-input"
+                      placeholder="Ask a question or describe an image..."
+                      value={prompt}
+                      onChange={(e) => setPrompt(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      rows="1"
+                    />
+                    <button
+                      className="send-button"
+                      onClick={handleSendMessage}
+                      disabled={loading || !prompt.trim()}
+                      aria-label="Send message"
+                    >
+                      <Send size={20} />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
 
